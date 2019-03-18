@@ -130,8 +130,6 @@ public class Calc {
                  continue;
             } catch (Exception e) {} //ловим исключение. Если оно выпало - значит мы суем что-то из операторов}
 
-            //TODO обработка минусов в начале строки, и после скобок
-
             if(operators.isEmpty()){
                 if (s.equals("-")) {
                     unar = true;
