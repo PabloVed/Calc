@@ -114,7 +114,7 @@ public class Calc {
 
 
     private static double evaluate(String expression)throws Exception {
-
+        boolean negative = false;
         Stack<Double> operands = new Stack<Double>(); // стек операнд
         Stack<String> operators = new Stack<String>(); // стек операторов
         StringTokenizer stringTokenizer = new StringTokenizer(expression, "()*/+-", true); // разбили строку на токены
@@ -128,21 +128,33 @@ public class Calc {
 
             //TODO обработка минусов в начале строки, и после скобок
 
-            if(operators.isEmpty()){operators.push(s);
-            continue;}
+            if(operators.isEmpty()){
+                operators.push(s);
+                continue;}
 
-            if(s.equals("(")){operators.push(s);
+            if(s.equals("(")){
+
+                if (operators.peek().equals("-")){
+                negative = true;
+                operators.pop();
+                operators.push("+");}
+
+            operators.push(s);
             continue;} //открывающую - всегда в стек
 
             if(s.equals(")")){
                 while (!operators.peek().equals("(")){
                     performOperation(operands,operators.pop());
-                }
+            }
                 operators.pop();
+                if (negative){
+                    Double temp = operands.pop()*(-1);
+                    operands.push(temp);}
                 continue;
             }
 
-            if(precedence(operators.peek())<precedence(s)){operators.push(s);
+            if(precedence(operators.peek())<precedence(s)){
+                operators.push(s);
                 continue;} //выше по приоритету - в стек
 
             if(precedence(operators.peek())>=precedence(s)){
@@ -156,6 +168,20 @@ public class Calc {
         }
         return operands.peek();
 
+    }
+
+    private static void checkPrecedence(String operator, Stack<String> operators, Stack<Double> operands){
+        if(precedence(operators.peek())<precedence(operator)){operators.push(operator);
+            } //выше по приоритету - в стек
+
+        if(precedence(operators.peek())>=precedence(operator)){
+            try {
+                performOperation(operands, operators.pop()); //ниже или равен по приоритету - вычисляем, засовываем тот оператор, на котором остановились
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            operators.push(operator);
+            }
     }
 
     private static int precedence(String operator){// считаем приоритет оператора
