@@ -107,6 +107,7 @@ public class Calc {
             result = evaluate(formula);
         } catch (Exception e) {
             e.printStackTrace();
+            return "Divison by zero!";
         }
 
         return String.valueOf(result);
@@ -167,21 +168,6 @@ public class Calc {
             performOperation(operands, operators.pop());
         }
         return operands.peek();
-
-    }
-
-    private static void checkPrecedence(String operator, Stack<String> operators, Stack<Double> operands){
-        if(precedence(operators.peek())<precedence(operator)){operators.push(operator);
-            } //выше по приоритету - в стек
-
-        if(precedence(operators.peek())>=precedence(operator)){
-            try {
-                performOperation(operands, operators.pop()); //ниже или равен по приоритету - вычисляем, засовываем тот оператор, на котором остановились
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            operators.push(operator);
-            }
     }
 
     private static int precedence(String operator){// считаем приоритет оператора
@@ -204,21 +190,24 @@ public class Calc {
         switch (operator){
             case "+":
                 result = operand1 + operand2;
-                System.out.println(operand1 +"+" + operand2);
+               // System.out.println(operand1 +"+" + operand2);
                 break;
             case "-":
                 result = operand1 - operand2;
-                System.out.println(operand1+"-"+operand2);
+               // System.out.println(operand1+"-"+operand2);
                 break;
             case "*":
                 result = operand1 * operand2;
-                System.out.println(operand1+"*"+operand2);
+               // System.out.println(operand1+"*"+operand2);
                 break;
             case "/":
                 if (operand2!=0){
                 result = operand1 / operand2;
-                System.out.println(operand1+"/"+operand2);}
-                else {throw new UnsupportedOperationException("Division by zero!");}
+                //System.out.println(operand1+"/"+operand2);
+                }
+                else {throw new ArithmeticException("Division by zero!");
+                }
+
                 break;
         }
         System.out.println(result);
