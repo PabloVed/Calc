@@ -116,6 +116,7 @@ public class Calc {
 
     private static double evaluate(String expression)throws Exception {
         boolean negative = false;
+        boolean unar = false;
         Stack<Double> operands = new Stack<Double>(); // стек операнд
         Stack<String> operators = new Stack<String>(); // стек операторов
         StringTokenizer stringTokenizer = new StringTokenizer(expression, "()*/+-", true); // разбили строку на токены
@@ -123,13 +124,20 @@ public class Calc {
         while (stringTokenizer.hasMoreTokens()) {   //идем по токенам
             String s = stringTokenizer.nextToken();
             try {Double digit = Double.parseDouble(s); //пробуем его на принадлежность к числам
-                 operands.push(digit);//если получится - суем в числа
+                if (unar){operands.push(digit*(-1));
+                continue;}
+                operands.push(digit);//если получится - суем в числа
                  continue;
             } catch (Exception e) {} //ловим исключение. Если оно выпало - значит мы суем что-то из операторов}
 
             //TODO обработка минусов в начале строки, и после скобок
 
             if(operators.isEmpty()){
+                if (s.equals("-")) {
+                    unar = true;
+                    continue;
+                }
+
                 operators.push(s);
                 continue;}
 
